@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Day63Demo.Controllers.TestViewModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +7,19 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Telephone</th>
+    </tr>
+    @foreach (var viewModel in Model)
+    {
+        <tr>
+            <td>@viewModel.FirstName</td>
+            <td>@viewModel.LastName</td>
+            <td>@viewModel.Telephone</td>
+        </tr>
+    }
+</table>

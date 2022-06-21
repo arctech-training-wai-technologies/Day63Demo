@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Day63Demo.Controllers;
 using Day63Demo.Data.Models;
 using Day63Demo.Data.ViewModels;
 
@@ -16,5 +17,8 @@ public class AutoMapperProfile : Profile
             .ReverseMap()
             .ForPath(em => em.DepartmentRef.Name, opt => opt.Ignore())
             .ForPath(em => em.NationalityRef.Text, opt => opt.Ignore());
+
+
+        CreateMap<TestDataModel, TestViewModel>();
     }
 }

@@ -22,11 +22,11 @@ public class EmployeeViewModel
     public int DepartmentRefId { get; set; }
 
     [Display(Name = "Department")]
-    public string DepartmentName { get; set; } = null!;
+    public string? DepartmentName { get; set; } = null!;
 
     [Display(Name = "Nationality Id")]
     public int NationalityRefId { get; set; }
 
     [Display(Name = "Nationality")]
-    public string NationalityText { get; set; } = null!;
+    public string? NationalityText { get; set; } = null!;
 }

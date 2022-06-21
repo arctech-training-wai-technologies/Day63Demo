@@ -2,16 +2,19 @@
 using Day63Demo.Data.Services;
 using Day63Demo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Day63Demo.Controllers;
 
 public class EmployeesController : Controller
 {
     private readonly IEmployeesService _employeesService;
+    private readonly ILogger<EmployeesController> _logger;
 
-    public EmployeesController(IEmployeesService employeesService)
+    public EmployeesController(IEmployeesService employeesService, ILogger<EmployeesController> logger)
     {
         _employeesService = employeesService;
+        _logger = logger;
     }
 
     // GET: Employees
@@ -54,8 +57,19 @@ public class EmployeesController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _employeesService.CreateAsync(employee);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _employeesService.CreateAsync(employee);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Some Error occurred while creating employee. for employee id = {Name}", employee.Name);
+
+                ModelState.AddModelError(string.Empty, "Cannot create Employee at this time");
+
+                return View(employee);
+            }
         }
 
         ViewData["DepartmentList"] = await GetSelectListDepartmentAsync();
@@ -66,6 +80,7 @@ public class EmployeesController : Controller
 
     private async Task<SelectList> GetSelectListDepartmentAsync()
     {
+        _logger.LogInformation("Started GetSelectListDepartmentAsync");
         return new SelectList(
             await _employeesService.GetDepartmentForDropDownAsync(),
             nameof(DropDownViewModel.Id), nameof(DropDownViewModel.Text));
@@ -73,6 +88,8 @@ public class EmployeesController : Controller
 
     private async Task<SelectList> GetSelectListNationalityAsync()
     {
+        _logger.LogInformation("Started GetSelectListNationalityAsync");
+
         return new SelectList(
             await _employeesService.GetNationalityForDropDownAsync(),
             nameof(DropDownViewModel.Id), nameof(DropDownViewModel.Text));

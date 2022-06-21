@@ -9,13 +9,16 @@ public class EmployeesService : IEmployeesService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly ILogger<EmployeesService> _logger;
 
     public EmployeesService(
         ApplicationDbContext dbContext,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<EmployeesService> logger)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<List<EmployeeViewModel>> GetAllAsyncOldMethod()
@@ -56,6 +59,9 @@ public class EmployeesService : IEmployeesService
     public async Task CreateAsync(EmployeeViewModel employee)
     {
         var employeeDataModel = _mapper.Map<Employee>(employee);
+
+        if (employeeDataModel.DateOfBirth != null && ((DateTime)employeeDataModel.DateOfBirth).Year > 2004)
+            _logger.LogWarning("A underage user is accessing website. Please verify");
 
         _dbContext.Add(employeeDataModel);
         await _dbContext.SaveChangesAsync();
